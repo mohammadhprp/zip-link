@@ -1,0 +1,38 @@
+name: zip-link-backend
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    environment:
+      - HTTP_LISTEN_ADDRESS=3000
+      - JWT_SECRET=${JWT_SECRET}
+      - MONGO_DB_NAME=${MONGO_DB_NAME}
+      - MONGO_DB_URL=${MONGO_DB_URL}
+      - MONGO_DB_URL_TEST=${MONGO_DB_URL_TEST}
+      - APP_NAME=${APP_NAME}
+      - APP_URL=${APP_URL}
+    depends_on:
+      - mongodb
+    networks:
+      - zip-link-network
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "${MONGO_PORT}:${MONGO_PORT}"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - zip-link-network
+    restart: unless-stopped
+
+networks:
+  zip-link-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
