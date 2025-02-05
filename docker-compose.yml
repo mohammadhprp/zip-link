@@ -14,8 +14,10 @@ services:
       - MONGO_DB_URL_TEST=${MONGO_DB_URL_TEST}
       - APP_NAME=${APP_NAME}
       - APP_URL=${APP_URL}
+      - REDIS_URL=${REDIS_URL}
     depends_on:
       - mongodb
+      - redis
     networks:
       - zip-link-network
     restart: unless-stopped
@@ -30,9 +32,20 @@ services:
       - zip-link-network
     restart: unless-stopped
 
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - zip-link-network
+    restart: unless-stopped
+
 networks:
   zip-link-network:
     driver: bridge
 
 volumes:
   mongodb_data:
+  redis_data:
