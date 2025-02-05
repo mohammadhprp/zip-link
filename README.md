@@ -5,6 +5,7 @@
 ## Prerequisites
 
 Before getting started, ensure you have the following installed:
+
 - **Docker**: [Install Docker](https://www.docker.com/get-started)
 
 ## Technologies Used
@@ -17,12 +18,14 @@ Before getting started, ensure you have the following installed:
 ## Installation
 
 1. Clone the repository:
+
     ```bash
     git clone https://github.com/mohammadhprp/zip-link.git
     cd zip-link
     ```
 
 2. Build and run the Docker container:
+
     ```bash
     docker compose up -d --build
     ```

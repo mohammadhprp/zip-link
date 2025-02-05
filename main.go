@@ -14,11 +14,9 @@ import (
 func main() {
 	app := fiber.New(configs.FiberConfig())
 
-	// Connect to MongoDB
 	db := configs.ConnectMongoDB()
 	defer configs.MongoClient.Disconnect(nil)
 
-	// Connet to Redis
 	cache := configs.ConnectRedisDB()
 
 	app.Use(middlewares.LoggerMiddleware())
