@@ -12,7 +12,7 @@ type URL struct {
 	ShortCode   string             `bson:"short_code" json:"short_code"`
 	ClickCount  int                `bson:"click_count" json:"click_count"`
 	Metadata    Map                `bson:"metadata,omitempty" json:"metadata"`
-	ExpiresAt   *time.Time         `bson:"expires_at" json:"expries_at"`
+	ExpiresAt   *time.Time         `bson:"expires_at" json:"expires_at"`
 	CreatedAt   time.Time          `bson:"created_at" json:"created_at"`
 	UpdatedAt   time.Time          `bson:"updated_at" json:"updated_at"`
 }

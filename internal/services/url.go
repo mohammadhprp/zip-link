@@ -87,7 +87,7 @@ func (s *URLService) Get(ctx context.Context, filter bson.M) (*models.URL, error
 	}
 
 	if err := s.cacheURL(ctx, &url); err != nil {
-		log.Fatalf("Faile cache Redis: %v", err)
+		log.Fatalf("Failed to cache the url: %v", err)
 	}
 
 	return &url, nil
