@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/mohammadhprp/zip-link/internal/requests"
 	"github.com/mohammadhprp/zip-link/internal/services"
 	"github.com/mohammadhprp/zip-link/internal/utils"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type URLHandler struct {
@@ -44,4 +46,24 @@ func (h *URLHandler) Create(c *fiber.Ctx) error {
 	}
 
 	return c.Status(http.StatusCreated).JSON(response)
+}
+
+func (h *URLHandler) Get(c *fiber.Ctx) error {
+	code := c.Params("code")
+
+	filters := bson.M{
+		"short_code": code,
+	}
+
+	url, err := h.Service.Get(c.Context(), filters)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if err := h.Service.SetAnalytics(c, *url); err != nil {
+		return errors.New("Invalid URL")
+	}
+
+	return c.Redirect(url.OriginalURL, http.StatusMovedPermanently)
 }

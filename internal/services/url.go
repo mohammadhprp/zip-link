@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/mohammadhprp/zip-link/internal/models"
 	"github.com/mohammadhprp/zip-link/internal/requests"
 	"github.com/mohammadhprp/zip-link/internal/utils"
@@ -14,12 +15,14 @@ import (
 )
 
 type URLService struct {
-	Collection *mongo.Collection
+	Collection          *mongo.Collection
+	AnalyticsCollection *mongo.Collection
 }
 
 func NewURLService(db *mongo.Database) *URLService {
 	return &URLService{
-		Collection: db.Collection("urls"),
+		Collection:          db.Collection("urls"),
+		AnalyticsCollection: db.Collection("url_analytics"),
 	}
 }
 
@@ -45,8 +48,7 @@ func (s *URLService) Create(ctx context.Context, request requests.StoreURLReques
 	return url, nil
 }
 
-func (s *URLService) Get(ctx context.Context, code string) (*models.URL, error) {
-	filter := bson.M{"short_code": code}
+func (s *URLService) Get(ctx context.Context, filter bson.M) (*models.URL, error) {
 	var url models.URL
 
 	err := s.Collection.FindOne(ctx, filter).Decode(&url)
@@ -62,4 +64,23 @@ func (s *URLService) Get(ctx context.Context, code string) (*models.URL, error) 
 	}
 
 	return &url, nil
+}
+
+func (s *URLService) SetAnalytics(c *fiber.Ctx, url models.URL) error {
+	ipAddress := utils.GetClientIP(c)
+
+	analytics := models.URLAnalytics{
+		ID:        primitive.NewObjectID(),
+		URLID:     url.ID,
+		IPAddress: ipAddress,
+		UserAgent: c.Get("User-Agent"),
+		Referrer:  c.Get("Referer"),
+		CreatedAt: time.Now(),
+	}
+
+	if _, err := s.AnalyticsCollection.InsertOne(c.Context(), analytics); err != nil {
+		return errors.New("failed to log URL analytics: " + err.Error())
+	}
+
+	return nil
 }

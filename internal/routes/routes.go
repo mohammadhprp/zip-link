@@ -33,4 +33,6 @@ func (h *RouteHandler) Setup() {
 
 	urls := api.Group("/urls")
 	urls.Post("/", h.urlHandler.Create)
+
+	h.app.Get("/:code", h.urlHandler.Get)
 }
