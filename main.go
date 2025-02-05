@@ -18,9 +18,14 @@ func main() {
 	db := configs.ConnectMongoDB()
 	defer configs.MongoClient.Disconnect(nil)
 
+	// Connet to Redis
+	cache := configs.ConnectRedisDB()
+
 	app.Use(middlewares.LoggerMiddleware())
 
-	urlService := services.NewURLService(db)
+	cacheService := services.NewCacheService(cache)
+
+	urlService := services.NewURLService(db, cacheService)
 	urlHandler := handlers.NewURLHandler(urlService)
 
 	routeHandler := routes.NewRouteHandler(app, urlHandler)
