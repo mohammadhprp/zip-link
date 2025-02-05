@@ -12,6 +12,7 @@ Before getting started, ensure you have the following installed:
 - **Go**: Backend service for high performance and scalability.
 - **Fiber**: High-performance web framework for Go.
 - **MongoDB**: NoSQL database for storing URL information and analytics.
+- **Redis**: In-memory data store used for caching and session management.
 
 ## Installation
 
