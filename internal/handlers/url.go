@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -55,14 +54,10 @@ func (h *URLHandler) Get(c *fiber.Ctx) error {
 		"short_code": code,
 	}
 
-	url, err := h.Service.Get(c.Context(), filters)
+	url, err := h.Service.Get(c, filters)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	if err := h.Service.SetAnalytics(c, *url); err != nil {
-		return errors.New("Invalid URL")
 	}
 
 	return c.Redirect(url.OriginalURL, http.StatusMovedPermanently)
