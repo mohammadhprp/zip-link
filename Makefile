@@ -1,4 +1,4 @@
-.PHONY: build start stop restart logs clean help
+.PHONY: build start stop restart logs clean seed help
 
 .DEFAULT_GOAL := help
 
@@ -28,3 +28,6 @@ logs: ## Tail container logs (add ctrl+c to stop)
 clean: ## Stop containers and remove volumes, images
 	@docker compose down -v --rmi all
 
+seed: ## Run database seeding
+	@echo "Running database seeding..."
+	@docker compose exec -it app go run internal/seed/seed.go
