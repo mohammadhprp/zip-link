@@ -3,20 +3,25 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mohammadhprp/zip-link/internal/handlers"
+	"github.com/mohammadhprp/zip-link/internal/middlewares"
+	"github.com/mohammadhprp/zip-link/internal/services"
 )
 
 type RouteHandler struct {
-	app        *fiber.App
-	urlHandler *handlers.URLHandler
+	app           *fiber.App
+	urlHandler    *handlers.URLHandler
+	apiKeyService *services.APIKetService
 }
 
 func NewRouteHandler(
 	app *fiber.App,
 	urlHandler *handlers.URLHandler,
+	apiKeyService *services.APIKetService,
 ) *RouteHandler {
 	return &RouteHandler{
-		app:        app,
-		urlHandler: urlHandler,
+		app:           app,
+		urlHandler:    urlHandler,
+		apiKeyService: apiKeyService,
 	}
 }
 
@@ -31,7 +36,7 @@ func (h *RouteHandler) Setup() {
 
 	api.Get("/up", handlers.HealthCheck)
 
-	urls := api.Group("/urls")
+	urls := api.Group("/urls", middlewares.APIAuthenticationMiddleware(h.apiKeyService))
 	urls.Post("/", h.urlHandler.Create)
 
 	h.app.Get("/:code", h.urlHandler.Get)

@@ -23,10 +23,12 @@ func main() {
 
 	cacheService := services.NewCacheService(cache)
 
+	apiKeyService := services.NewAPIKetService(db)
+
 	urlService := services.NewURLService(db, cacheService)
 	urlHandler := handlers.NewURLHandler(urlService)
 
-	routeHandler := routes.NewRouteHandler(app, urlHandler)
+	routeHandler := routes.NewRouteHandler(app, urlHandler, apiKeyService)
 	routeHandler.Setup()
 
 	log.Fatal(app.Listen(":3000"))
