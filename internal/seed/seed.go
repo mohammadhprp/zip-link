@@ -27,7 +27,7 @@ func seedAPIKeys(apiKeyService *services.APIKeyService) {
 	apiKeys := []models.APIKey{
 		{
 			Key:          uuid.New().String(),
-			ExpiresAt:    time.Now().Add(30),
+			ExpiresAt:    time.Now().Add(time.Hour * 22 * 7),
 			RequestCount: 0,
 			Limit:        1000,
 			CreatedAt:    time.Now(),
@@ -35,7 +35,7 @@ func seedAPIKeys(apiKeyService *services.APIKeyService) {
 		},
 		{
 			Key:          uuid.New().String(),
-			ExpiresAt:    time.Now().Add(30),
+			ExpiresAt:    time.Now().Add(time.Hour * 24),
 			RequestCount: 98,
 			Limit:        100,
 			CreatedAt:    time.Now(),
