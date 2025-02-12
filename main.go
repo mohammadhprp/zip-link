@@ -23,7 +23,7 @@ func main() {
 
 	cacheService := services.NewCacheService(cache)
 
-	apiKeyService := services.NewAPIKetService(db)
+	apiKeyService := services.NewAPIKeyService(db)
 
 	urlService := services.NewURLService(db, cacheService)
 	urlHandler := handlers.NewURLHandler(urlService)

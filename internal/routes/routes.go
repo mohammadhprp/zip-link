@@ -10,13 +10,13 @@ import (
 type RouteHandler struct {
 	app           *fiber.App
 	urlHandler    *handlers.URLHandler
-	apiKeyService *services.APIKetService
+	apiKeyService *services.APIKeyService
 }
 
 func NewRouteHandler(
 	app *fiber.App,
 	urlHandler *handlers.URLHandler,
-	apiKeyService *services.APIKetService,
+	apiKeyService *services.APIKeyService,
 ) *RouteHandler {
 	return &RouteHandler{
 		app:           app,

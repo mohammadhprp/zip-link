@@ -1,35 +1,46 @@
 package middlewares
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mohammadhprp/zip-link/internal/services"
 )
 
-func APIAuthenticationMiddleware(service *services.APIKetService) fiber.Handler {
+func APIAuthenticationMiddleware(service *services.APIKeyService) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		key, ok := c.GetReqHeaders()["X-Api-Kay"]
+		key := c.Get("X-Api-Key")
 
-		if !ok {
-			return fmt.Errorf("unauthorized")
+		if key == "" {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "Unauthorized",
+			})
 		}
 
-		apiKeyInfo, err := service.GetByKey(c.Context(), key[0])
-
+		apiKeyInfo, err := service.GetByKey(c.Context(), key)
 		if err != nil {
-			return fmt.Errorf("Invalid API key")
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+				"error": "Invalid API key",
+			})
 		}
 
 		if time.Now().After(apiKeyInfo.ExpiresAt) {
-			return fmt.Errorf("API key expired")
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "API key expired",
+			})
 		}
 
 		if apiKeyInfo.RequestCount >= apiKeyInfo.Limit {
-			return fmt.Errorf("API request limit reached")
+			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+				"error": "API request limit reached",
+			})
 		}
-		service.IncreaseRequestCount(c.Context(), apiKeyInfo)
+
+		if err := service.IncreaseRequestCount(c.Context(), apiKeyInfo); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to update request count",
+			})
+		}
 
 		return c.Next()
 	}

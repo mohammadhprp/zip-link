@@ -15,12 +15,12 @@ func main() {
 	db := configs.ConnectMongoDB()
 	defer configs.MongoClient.Disconnect(nil)
 
-	apiKeyService := services.NewAPIKetService(db)
+	apiKeyService := services.NewAPIKeyService(db)
 
 	seedAPIKeys(apiKeyService)
 }
 
-func seedAPIKeys(apiKeyService *services.APIKetService) {
+func seedAPIKeys(apiKeyService *services.APIKeyService) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
