@@ -3,7 +3,7 @@ module github.com/mohammadhprp/zip-link
 go 1.23.2
 
 require (
-	github.com/gofiber/fiber/v2 v2.52.7
+	github.com/gofiber/fiber/v2 v2.52.9
 	github.com/google/uuid v1.6.0
 	github.com/redis/go-redis/v9 v9.7.0
 	go.mongodb.org/mongo-driver v1.17.2
